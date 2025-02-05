@@ -1,15 +1,21 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // useNavigate import edildi
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SignIn.css";
 
 const SignIn = () => {
-  const [identifier, setIdentifier] = useState(""); // Kullanıcı adı veya email
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // useNavigate ile yönlendirme işlemi yapacağız
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    // Eğer kullanıcı daha önce giriş yaptıysa direkt ana sayfaya yönlendir
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,13 +34,18 @@ const SignIn = () => {
         password,
       });
 
-      if (response.data.status === "success") {
-        console.log("User Data:", response.data.data);
-        alert("Login successful!");
-        navigate("/");
+      const { status, message, data } = response.data;
 
+      if (status === "success" && data) {
+        console.log("User Data:", data);
+
+        // Kullanıcı oturum bilgisini kaydet
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("user", JSON.stringify(data));
+        
+        navigate("/"); // Ana sayfaya yönlendir
       } else {
-        setError(response.data.message || "Login failed. Please try again.");
+        setError(message || "Login failed. Please try again.");
       }
 
     } catch (error) {
