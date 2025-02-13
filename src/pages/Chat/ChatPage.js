@@ -10,7 +10,7 @@ const ChatPage = () => {
   const [emailHistory, setEmailHistory] = useState({});
 
   // Getting current user ID from localStorage
-  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const currentUserId = currentUser ? currentUser.id : null;
 
   useEffect(() => {

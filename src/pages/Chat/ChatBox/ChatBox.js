@@ -8,8 +8,8 @@ const ChatBox = ({ selectedUser, emailHistory, onSendEmail }) => {
   const emailHistoryRef = useRef(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    setCurrentUser(user);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    setCurrentUser(currentUser);
   }, []);
 
   useEffect(() => {
