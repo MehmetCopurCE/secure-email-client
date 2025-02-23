@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SignIn.css";
+import { getPrivateKey } from "../../../utils/cryptoUtils";
 
 const SignIn = () => {
   const [identifier, setIdentifier] = useState("");
@@ -37,13 +38,11 @@ const SignIn = () => {
       const { status, message, data } = response.data;
 
       if (status === "success" && data) {
-        console.log("User Data:", data);
-
-        // Kullanıcı oturum bilgisini kaydet
+        const privateKey = await getPrivateKey(data.email);        
+        const userWithPrivateKey = { ...data, privateKey };
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("user", JSON.stringify(data));
-        
-        navigate("/"); // Ana sayfaya yönlendir
+        localStorage.setItem("currentUser", JSON.stringify(userWithPrivateKey));
+        navigate("/");
       } else {
         setError(message || "Login failed. Please try again.");
       }

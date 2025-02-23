@@ -60,7 +60,7 @@
     flex-direction: column;
     overflow-y: auto;
     flex-grow: 1;
-    max-height: 66%;
+    max-height: 60%;
     scroll-behavior: smooth;
 }
 

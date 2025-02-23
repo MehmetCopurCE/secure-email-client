@@ -17,7 +17,7 @@ const Navbar = () => {
     setIsLoggedIn(loggedIn);
 
     if (loggedIn) {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const storedUser = JSON.parse(localStorage.getItem("currentUser"));
       setUser(storedUser);
     }
 
