@@ -46,19 +46,19 @@ export async function storePrivateKey(email, privateKey) {
   try {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.digest("SHA-256", enc.encode(email));
-      console.log("SHA-256 Anahtar Üretildi:", new Uint8Array(keyMaterial)); // DEBUG
+      //console.log("SHA-256 Anahtar Üretildi:", new Uint8Array(keyMaterial)); // DEBUG
 
       const encryptionKey = await crypto.subtle.importKey("raw", keyMaterial, { name: "AES-GCM" }, false, ["encrypt"]);
       
       const iv = crypto.getRandomValues(new Uint8Array(12)); // IV oluştur
-      console.log("IV:", iv); // DEBUG
+      //console.log("IV:", iv); // DEBUG
 
       const encryptedData = await crypto.subtle.encrypt(
           { name: "AES-GCM", iv },
           encryptionKey,
           enc.encode(privateKey)
       );
-      console.log("Şifrelenmiş Private Key:", new Uint8Array(encryptedData)); // DEBUG
+      //console.log("Şifrelenmiş Private Key:", new Uint8Array(encryptedData)); // DEBUG
 
       // localStorage'a JSON formatında kaydet
       localStorage.setItem(email, JSON.stringify({
@@ -66,7 +66,7 @@ export async function storePrivateKey(email, privateKey) {
           encryptedKey: Array.from(new Uint8Array(encryptedData)) // Uint8Array -> Array
       }));
 
-      console.log(`Private key başarıyla kaydedildi: ${email}`);
+      //console.log(`Private key başarıyla kaydedildi: ${email}`);
 
   } catch (error) {
       console.error("Private key saklama hatası:", error);
@@ -102,7 +102,7 @@ export async function getPrivateKey(email) {
   try {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.digest("SHA-256", enc.encode(email));
-      console.log("SHA-256 Anahtar Çözüldü:", new Uint8Array(keyMaterial)); // DEBUG
+      //console.log("SHA-256 Anahtar Çözüldü:", new Uint8Array(keyMaterial)); // DEBUG
 
       const decryptionKey = await crypto.subtle.importKey(
           "raw",
@@ -119,7 +119,7 @@ export async function getPrivateKey(email) {
       );
 
       const decodedPrivateKey = new TextDecoder().decode(decryptedData);
-      console.log("Şifre Çözüldü:", decodedPrivateKey); // DEBUG
+      //console.log("Şifre Çözüldü:", decodedPrivateKey); // DEBUG
       return decodedPrivateKey;
   } catch (error) {
       console.error("Şifre çözme hatası:", error);

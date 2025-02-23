@@ -3,6 +3,8 @@ import axios from "axios";
 import UserList from "./UserList/UserList";
 import ChatBox from "./ChatBox/ChatBox";
 import "./ChatPage.css";
+import { encryptMessage, signMessage, arrayBufferToBase64 } from "../../utils/encryptionUtils";
+
 
 const ChatPage = () => {
   const [users, setUsers] = useState([]);
@@ -52,26 +54,42 @@ const ChatPage = () => {
     }
   }, [selectedUser, currentUserId]);
 
-  const handleSendEmail = (user, content) => {
-    if (!currentUserId || !user?.id) {
-      console.error("Gönderen veya alıcı ID eksik!");
+  
+  const handleSendEmail = async (user, content) => {
+    if (!currentUser || !user) {
+      console.error("Kullanıcı bilgileri eksik!");
       return;
     }
   
+    // Mesajın şifrelenmesi
+    const encryptedMessage = await encryptMessage(content.content, user.publicKey);
+    const encryptedSubject = await encryptMessage(content.subject, user.publicKey);
+    // Mesajın imzalanması
+    const signature = await signMessage(content.content, currentUser.privateKey);
+  
+    // ArrayBuffer verilerini Base64 formatına dönüştürme
+    const encryptedMessageBase64 = arrayBufferToBase64(encryptedMessage);
+    const encryptedSubjectBase64 = arrayBufferToBase64(encryptedSubject);
+    const signatureBase64 = arrayBufferToBase64(signature);
+  
+    // E-posta verisini oluşturuyoruz
     const emailData = {
       senderId: currentUserId,
       receiverId: user.id,
-      subject: content.subject,
-      content: content.content,
+      subject: encryptedSubjectBase64,  // Şifreli konu Base64 olarak gönderiliyor
+      content: encryptedMessageBase64,  // Şifreli mesaj Base64 olarak gönderiliyor
+      signature: signatureBase64,       // İmza Base64 olarak gönderiliyor
     };
   
+    console.log("Gönderilen e-posta verisi:", emailData);
+  
+    // E-postayı API'ye gönderme
     axios
       .post("http://localhost:80/api/emails/send", emailData)
       .then((response) => {
         if (response.data.status === "success" && response.data.data) {
           const newEmail = response.data.data;
-  
-          // Yeni e-postayı UI'ye ekle
+          // Yeni e-postayı UI'ye ekliyoruz
           setEmailHistory((prevState) => ({
             ...prevState,
             [user.id]: [...(prevState[user.id] || []), newEmail],
@@ -85,7 +103,6 @@ const ChatPage = () => {
       });
   };
   
-
 
   return (
     <div className="chat-container">

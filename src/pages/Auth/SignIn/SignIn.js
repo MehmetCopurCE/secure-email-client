@@ -38,7 +38,7 @@ const SignIn = () => {
       const { status, message, data } = response.data;
 
       if (status === "success" && data) {
-        const privateKey = await getPrivateKey(data.email);
+        const privateKey = await getPrivateKey(data.email);        
         const userWithPrivateKey = { ...data, privateKey };
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("currentUser", JSON.stringify(userWithPrivateKey));
