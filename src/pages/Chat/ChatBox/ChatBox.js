@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./ChatBox.css";
-import { decryptMessage, base64ToArrayBuffer } from "../../../utils/encryptionUtils";
+import { decryptMessage, base64ToArrayBuffer, verifyMessageSignature } from "../../../utils/encryptionUtils";
 import { getPrivateKey } from "../../../utils/cryptoUtils";
+import defaultAvatar from "../../../assets/user.png";  // Dosyanın gerçek yoluna göre düzenle
+import epostaImage from "../../../assets/eposta.png"; // Resmi import et
+
+
 
 const ChatBox = ({ selectedUser, emailHistory, onSendEmail }) => {
   const [newEmailSubject, setNewEmailSubject] = useState("");
@@ -31,27 +35,25 @@ const ChatBox = ({ selectedUser, emailHistory, onSendEmail }) => {
 
           try {
             const encryptedContent = base64ToArrayBuffer(email.content);
-            const encryptedSubject = base64ToArrayBuffer(email.subject); // Subject'ı da alıyoruz
-            const signatureArrayBuffer = base64ToArrayBuffer(email.signature);
+            const encryptedSubject = base64ToArrayBuffer(email.subject);
 
-            let decryptedContent;
-            let decryptedSubject;
+            // Şifre çözme işlemi için privateKey'i belirleme
+            const privateKey = email.senderId === currentUser?.id
+              ? await getPrivateKey(selectedUser?.email)
+              : currentUser?.privateKey;
 
-            if (email.senderId === currentUser?.id) {
-              decryptedContent = await decryptMessage(encryptedContent, await getPrivateKey(selectedUser?.email));
-              decryptedSubject = await decryptMessage(encryptedSubject, await getPrivateKey(selectedUser?.email)); // Subject çözülüyor
-            } else {
-              decryptedContent = await decryptMessage(encryptedContent, currentUser?.privateKey);
-              decryptedSubject = await decryptMessage(encryptedSubject, currentUser?.privateKey); // Subject çözülüyor
-            }
+            // Content ve Subject'in şifresini çözme
+            const decryptedContent = await decryptMessage(encryptedContent, privateKey);
+            const decryptedSubject = await decryptMessage(encryptedSubject, privateKey);
 
-            // İmza doğrulaması (Şimdilik true olarak bırakılmış)
-            const isValidSignature = true;
+            // İmza doğrulama (şimdilik varsayılan olarak true)
+            const publicKey = email.senderId === currentUser?.id ? currentUser?.publicKey : selectedUser?.publicKey;
+            const isValidSignature = await verifyMessageSignature(decryptedContent, email.signature, publicKey);
 
             return {
               ...email,
               decryptedContent,
-              decryptedSubject, // Decrypt edilmiş subject'i ekliyoruz
+              decryptedSubject,
               isValidSignature,
             };
           } catch (error) {
@@ -59,7 +61,7 @@ const ChatBox = ({ selectedUser, emailHistory, onSendEmail }) => {
             return {
               ...email,
               decryptedContent: "Error processing this email.",
-              decryptedSubject: "Error processing subject.", // Error mesajı ekliyoruz
+              decryptedSubject: "Error processing subject.",
               isValidSignature: false,
             };
           }
@@ -96,17 +98,37 @@ const ChatBox = ({ selectedUser, emailHistory, onSendEmail }) => {
     return new Date(date).toLocaleDateString("en-US", options);
   };
 
-  if (!selectedUser) {
-    return <div className="chat-box">Select a user to send an email</div>;
-  }
+if (!selectedUser) {
+  return (
+    <div className="no-user-selected">
+      <img src={epostaImage} alt="No emails yet" className="no-emails-image" />
+      <p className="no-emails-message">Select a user to send an email</p>
+    </div>
+  );
+}
+
 
   return (
     <div className="chat-box">
-      <h2>{selectedUser.username}</h2>
+      <div className="chat-header">
+        <img
+          src={selectedUser.avatarUrl || defaultAvatar}
+          alt={selectedUser.username}
+          className="chat-avatar"
+        />
+        <div className="chat-user-info">
+          <h2>{selectedUser.username}</h2>
+          <p>{selectedUser.email}</p>
+        </div>
+      </div>
+
 
       <div className="email-history" ref={emailHistoryRef}>
         {processedEmails.length === 0 ? (
-          <p>No emails yet</p>
+          <div className="no-emails-container">
+            <img src={epostaImage} alt="No emails yet" className="no-emails-image" />
+            <p className="no-emails">No emails yet</p>
+          </div>
         ) : (
           processedEmails.map((email, index) => {
             if (!email || !email.senderId) {

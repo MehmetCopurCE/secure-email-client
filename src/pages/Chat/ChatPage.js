@@ -80,9 +80,7 @@ const ChatPage = () => {
       content: encryptedMessageBase64,  // Şifreli mesaj Base64 olarak gönderiliyor
       signature: signatureBase64,       // İmza Base64 olarak gönderiliyor
     };
-  
-    console.log("Gönderilen e-posta verisi:", emailData);
-  
+    
     // E-postayı API'ye gönderme
     axios
       .post("http://localhost:80/api/emails/send", emailData)
@@ -104,8 +102,10 @@ const ChatPage = () => {
   };
   
 
-  return (
-    <div className="chat-container">
+return (
+  <div className="chat-container">
+    <div className="chat-overlay"></div> {/* Gölgelendirme katmanı */}
+    <div className="chat-content">
       <UserList
         users={users}
         onUserSelect={setSelectedUser}
@@ -117,7 +117,9 @@ const ChatPage = () => {
         onSendEmail={handleSendEmail}
       />
     </div>
-  );
+  </div>
+);
+
 };
 
 export default ChatPage;

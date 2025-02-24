@@ -11,10 +11,36 @@
     max-width: 50%;
 }
 
-.email-header {
-    font-weight: bold;
-    margin-bottom: 5px;
+.chat-header {
+    display: flex;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
+
+.chat-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.chat-user-info {
+    display: flex;
+    flex-direction: column;
+}
+.chat-user-info h2 {
+    margin: 0;
+    font-size: 18px;
+}
+.chat-user-info p {
+    margin: 0;
+    font-size: 14px;
+    color: gray;
+}
+
 
 .email-subject {
     font-style: italic;
@@ -111,3 +137,30 @@
 .btn:hover {
     opacity: 0.8;
 }
+
+.no-emails-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Ensures the container takes up the full height of its parent */
+    text-align: center;
+  }
+  
+  .no-emails-image {
+    width: 200px; /* Adjust the size of the image as needed */
+    margin-bottom: 10px; /* Adds space between the image and the text */
+    opacity: 0.5; /* Makes the image slightly transparent */
+  }
+
+  .no-user-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Yüksekliği tam ekran yapar */
+    width: 70%; /* Genişliği tam ekran yapar */
+    text-align: center;
+  }
+  
+  

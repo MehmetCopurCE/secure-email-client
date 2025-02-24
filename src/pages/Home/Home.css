@@ -1,13 +1,129 @@
-/* Home.css */
+/* Home Page - Container */
 .home-container {
   width: 100%;
   height: 100vh;
-  /*background-image: url("../assets/secureEmail.webp");  Farklı bir resim */
+  background-image: url("../../assets/dash6.jpg"); /* Resmi doğru path'te tut */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  position: relative;
+  text-align: center;
+}
+
+/* Overlay (Arka planı karartma) */
+.home-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Hafif karartılmış arka plan */
+}
+
+.home-content {
+  position: relative;
+  color: white;
+  z-index: 1;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column; /* İçeriği dikeyde hizala */
+  justify-content: center; /* İçeriği dikeyde ortala */
+  align-items: center; /* Yatayda ortala */
+  text-align: center;
+  height: 100%; /* Sayfa boyutuna göre içerik alanının tamamını kullan */
+}
+
+.home-content h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.home-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Feature Cards Section */
+.home-features {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.home-feature-card {
+  background: rgba(255, 255, 255, 0.4); /* Daha opak arka plan */
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  width: 150px;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.home-feature-card:hover {
+  transform: scale(1.1); /* Hafif büyütme */
+  background: rgba(255, 255, 255, 0.5); /* Daha belirgin arka plan */
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Feature Icons */
+.home-feature-icon {
+  font-size: 2rem;
+  color: #00d9ff; /* Daha parlak ikon rengi */
+  margin-bottom: 10px;
+}
+
+/* Feature Card Titles */
+.home-feature-card h3 {
+  color: #fff; /* Başlıkları beyaz yap */
+  margin-bottom: 5px;
+}
+
+/* Feature Card Text */
+.home-feature-card p {
+  color: #f1f1f1; /* Açıklama metnini açık gri yap */
+}
+
+/* Start Button */
+.home-start-button {
+  background: #2c3e50;
+  color: #ffcc00;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 20px;
+  animation: bounce 1s infinite; /* Bouncing animation */
+  display: flex; /* Flex düzeni */
+  align-items: center; /* Dikeyde ortala */
+  justify-content: center; /* Yatayda ortala */
+}
+
+/* Arrow Icon */
+.home-arrow-icon {
+  margin-left: 10px; /* Ok ikonu ile yazı arasında boşluk */
+  font-size: 1.5rem; /* İkon boyutu */
+}
+
+.home-start-button:hover {
+  background: #ffcc00; /* Koyu sarı hover rengi */
+  color: black;
+}
+
+
+/* Button Animation (Bouncing Effect) */
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1); /* Büyüme */
+  }
+  100% {
+    transform: scale(1);
+  }
 }
