@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SignIn.css";
-import { getPrivateKey } from "../../../utils/cryptoUtils";
+import { getPrivateKey, verifyMessageSignature } from "../../../utils/cryptoUtils";
 
 const SignIn = () => {
   const [identifier, setIdentifier] = useState("");
